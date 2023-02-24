@@ -9,6 +9,7 @@ src
 - **Application** 
 - **Domain** 
 - **Infrastructure** 
+- **WebApi** 
 
 Tests
 - **Application.UnitTests** 
