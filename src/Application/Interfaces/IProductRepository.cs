@@ -8,7 +8,7 @@ namespace Kolmeo.Application.Interfaces
     public interface IProductRepository
     {
         Task<List<Product>> GetAllProductsAsync(string name);
-        Task<Product> GetProductByIdAsync(Guid Id);
+        Task<Product?> GetProductByIdAsync(Guid Id);
         Task<bool> AddNewProductAsync(Product product);
         Task<bool> UpdateProductAsync(Guid Id, Product updatedproduct);
         Task<bool> DeleteProductAsync(Guid Id);

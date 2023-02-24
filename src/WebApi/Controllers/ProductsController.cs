@@ -1,11 +1,8 @@
 ﻿using Kolmeo.Application.Interfaces;
-using Kolmeo.Application.Services;
 using Kolmeo.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Mime;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Kolmeo.WebApi.Controllers
 {
@@ -54,7 +51,7 @@ namespace Kolmeo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets the project that matches the specified ID - ID is a GUID.
+        /// Gets the product that matches the specified ID - ID is a GUID.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -64,15 +61,15 @@ namespace Kolmeo.WebApi.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetAsync(Guid id)
         {
-            _logger?.LogInformation($"Get Product for product Id: {id} :Request Received");
+            _logger?.LogInformation("Get Product for product Id: {id} :Request Received", id    );
 
             var product = await _productsService.GetProductByIdAsync(id);
             if (product != null)
             {
-                _logger?.LogInformation($"Get Product for product Id {id} :Response Sent");
+                _logger?.LogInformation("Get Product for product Id {id} :Response Sent", id);
                 return Ok(product);
             }
-            _logger?.LogInformation($"Get Product for product Id {id} :No products found");
+            _logger?.LogInformation("Get Product for product Id {id} :No products found", id);
             return NotFound();
         }
 
@@ -105,17 +102,39 @@ namespace Kolmeo.WebApi.Controllers
             return BadRequest();
         }
 
-        // PUT api/<ProductController>/5
-        
+        /// <summary>
+        /// Updates a product.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
+        [SwaggerResponse(200, "Success", typeof(Product))]
+        [SwaggerResponse(400, "BadRequest")]
+        [Produces(MediaTypeNames.Application.Json)]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> UpdateAsync(Guid id, Product product)
         {
+            _logger?.LogInformation("Update Product {product.Id} :Request Received", product.Id);
+            var validData = Extensions.IsModelValid(product);
+            if (!validData)
+            {
+                _logger?.LogInformation("Update Product {product.Id} :Invalid product data.", product.Id);
+                return BadRequest();
+            }
+            var updateSuccess = await _productsService.UpdateProductAsync(id, product);
+            if (updateSuccess)
+            {
+                _logger?.LogInformation("Update Product {product.Id} :Product Updated",product.Id);
+                return Ok(product);
+            }
+            _logger?.LogInformation($"Update Product {product.Id} :Invalid product data.");
+            return BadRequest();
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+
         /// <summary>
-        /// Deletes a product and its options.
+        /// Deletes a product
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -123,16 +142,17 @@ namespace Kolmeo.WebApi.Controllers
         [SwaggerResponse(204, "Success", typeof(bool))]
         [SwaggerResponse(404, "NotFound")]
         [Produces(MediaTypeNames.Application.Json)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            _logger?.LogInformation($"Delete Product {id} :Request Received");
+            _logger?.LogInformation("Delete Product {id} :Request Received", id);
             var deleteStatus = await _productsService.DeleteProductAsync(id);
             if (deleteStatus)
             {
-                _logger?.LogInformation($"Delete Product {id} :Product Deleted");
+                _logger?.LogInformation("Delete Product {id} :Product Deleted", id);
                 return NoContent();
             }
-            _logger?.LogInformation($"Delete Product {id} : Product Not Found");
+            _logger?.LogInformation("Delete Product {id} : Product Not Found", id);
             return NotFound();
         }
     }

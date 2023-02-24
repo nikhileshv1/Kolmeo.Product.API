@@ -9,8 +9,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ProductsDbContext>(options => options.UseInMemoryDatabase("ProductDb"));
-            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddDbContext<ProductsDbContext>(options => 
+                                                     options.UseInMemoryDatabase(configuration.GetSection("InMemoryDatabaseName").Value));
+            services.AddScoped<IProductRepository, ProductRepository>();
             return services;
         }
     }

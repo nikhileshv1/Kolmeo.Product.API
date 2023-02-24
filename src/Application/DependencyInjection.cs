@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {            
-            services.AddTransient<IProductsService, ProductsService>();
+            services.AddScoped<IProductsService, ProductsService>();
             services.AddAutoMapper(typeof(ProductProfile));
             return services;
         }

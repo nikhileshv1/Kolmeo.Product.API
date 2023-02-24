@@ -95,7 +95,7 @@ namespace Kolmeo.Infrastructure.Persistence.Repositories
         public async Task<Product?> GetProductByIdAsync(Guid Id)
         {
             try
-            {                
+            {
                 return await _productDbContext.Products.FirstOrDefaultAsync(product => product.Id == Id);
             }
             catch (Exception ex)

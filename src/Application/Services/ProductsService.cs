@@ -51,11 +51,13 @@ namespace Kolmeo.Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message.ToString());
+                _logger.LogError(ex.StackTrace);
                 throw;
             }
         }
-
+        /// <summary>
+        /// Gets All available Products 
+        /// </summary>
         public async Task<Products?> GetAllProductsAsync(string name)
         {
             var listOfProducts = await _productRepository.GetAllProductsAsync(name);
@@ -88,9 +90,24 @@ namespace Kolmeo.Application.Services
             return null;
         }
 
-        public Task<bool> UpdateProductAsync(Guid Id, Product updatedProduct)
+        /// <summary>
+        /// Updates details for a Product
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="updatedProduct"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateProductAsync(Guid Id, Product updatedProduct)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var product = _mapper.Map<Product, DbEntities.Product>(updatedProduct);
+                return await _productRepository.UpdateProductAsync(Id, product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.StackTrace);
+                throw;
+            }
         }
         /// <summary>
         /// Filters the list of products based on the search Key 'Name'
@@ -102,7 +119,7 @@ namespace Kolmeo.Application.Services
             if (!string.IsNullOrWhiteSpace(name))
             {
                 var filteredProducts = products?.Items?.FindAll(searchKey => searchKey.Name.ToLower().Contains(name.ToLower()));
-                if (products != null)
+                if (products != null && filteredProducts != null)
                 {
                     products.Items = filteredProducts;
                 }
