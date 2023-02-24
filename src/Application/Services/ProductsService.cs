@@ -38,9 +38,22 @@ namespace Kolmeo.Application.Services
             }
         }
 
-        public Task<bool> DeleteProductAsync(Guid Id)
+        /// <summary>
+        /// Deletes a product 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteProductAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _productRepository.DeleteProductAsync(Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message.ToString());
+                throw;
+            }
         }
 
         public async Task<Products?> GetAllProductsAsync(string name)
@@ -58,26 +71,6 @@ namespace Kolmeo.Application.Services
             }
             return null;
         }
-
-        ///// <summary>
-        ///// Gets All available Products 
-        ///// </summary>
-        ///// <returns></returns>
-        //public async Task<Products> GetAllProductsAsync(string name)
-        //{
-        //    var listOfProducts = await productsDbAccess.GetAllProductsAsync();
-        //    if (listOfProducts != null && listOfProducts.Any())
-        //    {
-        //        var result = mapper.Map<IEnumerable<Db.Models.Product>, IEnumerable<Product>>(listOfProducts);
-        //        var products = new Products()
-        //        {
-        //            Items = result.ToList()
-        //        };
-        //        FilterProductsByName(products, name);
-        //        return products;
-        //    }
-        //    return null;
-        //}
 
         /// <summary>
         /// Gets all available products for a given Id

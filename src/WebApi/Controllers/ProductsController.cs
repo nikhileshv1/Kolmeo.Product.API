@@ -113,11 +113,27 @@ namespace Kolmeo.WebApi.Controllers
         {
         }
 
-        // DELETE api/<ProductController>/5
-        [HttpDelete("{id}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public void Delete(int id)
+        /// <summary>
+        /// Deletes a product and its options.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(204, "Success", typeof(bool))]
+        [SwaggerResponse(404, "NotFound")]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
+            _logger?.LogInformation($"Delete Product {id} :Request Received");
+            var deleteStatus = await _productsService.DeleteProductAsync(id);
+            if (deleteStatus)
+            {
+                _logger?.LogInformation($"Delete Product {id} :Product Deleted");
+                return NoContent();
+            }
+            _logger?.LogInformation($"Delete Product {id} : Product Not Found");
+            return NotFound();
         }
     }
 }
