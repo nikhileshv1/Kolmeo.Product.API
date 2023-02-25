@@ -1,6 +1,5 @@
 using Kolmeo.WebApi;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection;
@@ -16,6 +15,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddProblemDetails();
+//builder.Services.AddLogging(c => c.ClearProviders());
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -50,12 +50,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", apiName);
     });
 }
-
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", apiName);
-});
 
 // Log Unhandled Exception.
 app.UseExceptionHandler(c => c.Run(async context =>

@@ -40,7 +40,7 @@ namespace Kolmeo.WebApi.Controllers
         {
             _logger.LogInformation("Get All Products of name {name}:Request Received", name);
 
-            var products = await _productsService.GetAllProductsAsync(name);
+            var products = await _productsService.GetAllProductsAsync(string.IsNullOrWhiteSpace(name) ? string.Empty : name);
             if (products != null)
             {
                 _logger.LogInformation("Get All Products of name {name}:Response Sent",name);
@@ -113,6 +113,7 @@ namespace Kolmeo.WebApi.Controllers
         [SwaggerResponse(400, "BadRequest")]
         [Produces(MediaTypeNames.Application.Json)]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [DevelopmentOnly]
         public async Task<IActionResult> UpdateAsync(Guid id, Product product)
         {
             _logger?.LogInformation("Update Product {product.Id} :Request Received", product.Id);
@@ -137,12 +138,13 @@ namespace Kolmeo.WebApi.Controllers
         /// Deletes a product
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns></returns>        
         [HttpDelete("{id}")]
         [SwaggerResponse(204, "Success", typeof(bool))]
         [SwaggerResponse(404, "NotFound")]
         [Produces(MediaTypeNames.Application.Json)]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [DevelopmentOnly]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             _logger?.LogInformation("Delete Product {id} :Request Received", id);

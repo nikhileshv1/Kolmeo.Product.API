@@ -12,7 +12,7 @@ namespace Kolmeo.WebApi
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        internal static string GetCorrelationId(this HttpRequest request) => request?.Headers["x-correllationid"].FirstOrDefault();
+        internal static string? GetCorrelationId(this HttpRequest request) => request.Headers["x-correllationid"].FirstOrDefault();
         /// <summary>
         /// Used to Validate User Input Data
         /// </summary>
